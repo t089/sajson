@@ -128,6 +128,19 @@ class FastJSONDecoder_Tests: XCTestCase {
         let _: DeferredDecodable = try FastJSONDecoder().decode(DeferredDecodable.self, from: data(input))
     }
     
+    func test_decoding_float() throws {
+        let input = "{\"value\": 90.32}"
+        let expectedOutput: Float = 90.32
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            let parsedInt = try container.decode(Float.self, forKey: "value")
+            XCTAssertEqual(parsedInt, expectedOutput)
+        }
+        
+        let _: DeferredDecodable = try FastJSONDecoder().decode(DeferredDecodable.self, from: data(input))
+    }
+    
     func test_decoding_string_missing_key() throws {
         let input = "{\"value\":\"Hello, world!\"}"
         let expectedDebugDescription: String = "No value associated with key TestCodingKey(\"wrong_key\") (\"wrong_key\")."

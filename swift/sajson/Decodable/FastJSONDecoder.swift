@@ -348,11 +348,11 @@ extension _JSONDecoder {
             throw DecodingError._typeMismatch(at: codingPath, expectation: Float.self, reality: value)
         }
         
-        guard let unboxedValue = Float(exactly: doubleValue) else {
+        guard abs(doubleValue) <= Double(Float.greatestFiniteMagnitude) else {
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Parsed JSON number <\(doubleValue)> does not fit in \(type)."))
         }
         
-        return unboxedValue
+        return Float(doubleValue)
     }
     
     fileprivate func unbox(_ value: ValueReader, as type: Double.Type) throws -> Double? {
@@ -362,11 +362,7 @@ extension _JSONDecoder {
             throw DecodingError._typeMismatch(at: codingPath, expectation: Double.self, reality: value)
         }
         
-        guard let unboxedValue = Double(exactly: doubleValue) else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Parsed JSON number <\(doubleValue)> does not fit in \(type)."))
-        }
-        
-        return unboxedValue
+        return doubleValue
     }
     
     fileprivate func unbox(_ value: ValueReader, as type: String.Type) throws -> String? {
