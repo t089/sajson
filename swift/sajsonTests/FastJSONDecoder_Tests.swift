@@ -41,7 +41,7 @@ fileprivate struct TestCodingKey: CodingKey, ExpressibleByStringLiteral, CustomS
     var description: String { return "TestCodingKey(\"\(stringValue)\")" }
 }
 
-fileprivate struct DeferredDecodable: _Decodable {
+fileprivate struct DeferredDecodable: Decodable {
     static var decodeHandler: (Decoder) throws -> () = { _ in }
     init(from decoder: Decoder) throws {
         try DeferredDecodable.decodeHandler(decoder)
@@ -232,6 +232,120 @@ class FastJSONDecoder_Tests: XCTestCase {
         }
         
         let _ = try FastJSONDecoder().decode(DeferredDecodable.self, from: input)
+    }
+    
+    func test_date_defferedToDate() throws {
+        let date = Date(timeIntervalSinceReferenceDate: Date().timeIntervalSinceReferenceDate)
+        let inputString = "{\"date\": \(date.timeIntervalSinceReferenceDate)}"
+        let input : Data = data(inputString)
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            let parsedDate = try container.decode(Date.self, forKey: "date")
+            XCTAssertEqual("\(parsedDate.timeIntervalSinceReferenceDate)", "\(date.timeIntervalSinceReferenceDate)")
+        }
+        
+        let decoder = FastJSONDecoder()
+        decoder.dateDecodingStrategy = .deferredToDate
+        _ = try decoder.decode(DeferredDecodable.self, from: input)
+    }
+    
+    func test_date_secondsSince1970() throws {
+        let date = Date(timeIntervalSince1970: TimeInterval(Int(Date().timeIntervalSince1970)))
+        let input : Data = data("{\"date\": \(date.timeIntervalSince1970)}")
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            XCTAssertEqual(try container.decode(Date.self, forKey: "date"), date)
+        }
+        
+        let decoder = FastJSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        _ = try decoder.decode(DeferredDecodable.self, from: input)
+    }
+    
+    func test_date_miliSecondsSince1970() throws {
+        let date = Date(timeIntervalSince1970: round(Date().timeIntervalSince1970 * 1000)/1000)
+        let input : Data = data("{\"date\": \(date.timeIntervalSince1970 * 1000)}")
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            XCTAssertEqual(try container.decode(Date.self, forKey: "date"), date)
+        }
+        
+        let decoder = FastJSONDecoder()
+        decoder.dateDecodingStrategy = .millisecondsSince1970
+        _ = try decoder.decode(DeferredDecodable.self, from: input)
+    }
+    
+    func test_date_iso() throws {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = .withInternetDateTime
+        let isoString = isoFormatter.string(from: Date())
+        let date  : Date = isoFormatter.date(from: isoString)!
+        let input : Data = data("{\"date\": \"\(isoString)\"}")
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            XCTAssertEqual(try container.decode(Date.self, forKey: "date"), date)
+        }
+        
+        let decoder = FastJSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        _ = try decoder.decode(DeferredDecodable.self, from: input)
+    }
+    
+    func test_date_formatted() throws {
+        
+        let dateFormatter = DateFormatter()
+        let formattedDate = dateFormatter.string(from: Date())
+        let input: Data = data("{\"date\": \"\(formattedDate)\"}")
+        let date = dateFormatter.date(from: formattedDate)!
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            XCTAssertEqual(try container.decode(Date.self, forKey: "date"), date)
+        }
+        
+        let decoder = FastJSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        _ = try decoder.decode(DeferredDecodable.self, from: input)
+    }
+    
+    
+    func test_date_custom() throws {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var datecomponents = DateComponents()
+        datecomponents.calendar = calendar
+        datecomponents.year = 2017
+        datecomponents.month = 3
+        datecomponents.day = 28
+        
+        let date = datecomponents.date!
+        let input: Data = data("{\"date\": \"2017-03-28\"}")
+        
+        DeferredDecodable.decodeHandler = { decoder in
+            let container = try decoder.container(keyedBy: TestCodingKey.self)
+            XCTAssertEqual(try container.decode(Date.self, forKey: "date"), date)
+        }
+        
+        let decoder = FastJSONDecoder()
+        decoder.dateDecodingStrategy = .custom({ decoder in
+            let container = try decoder.singleValueContainer()
+            let string = try container.decode(String.self)
+            let components = string.components(separatedBy: "-").flatMap { Int($0) }
+            guard components.count == 3 else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Expected date in format YYYY-MM-DD but got: \"\(string)\".") }
+            
+            var dateComponents = DateComponents()
+            dateComponents.calendar = calendar
+            dateComponents.year = components[0]
+            dateComponents.month = components[1]
+            dateComponents.day = components[2]
+            
+            guard let date = dateComponents.date else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Could not convert string \"\(string)\" to date in format YYYY-MM-DD.") }
+            return date
+        })
+        _ = try decoder.decode(DeferredDecodable.self, from: input)
     }
     
     // MARK: Benchmarks

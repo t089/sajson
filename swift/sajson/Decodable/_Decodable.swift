@@ -1,5 +1,5 @@
 //
-//  _Decodable.swift
+//  Decodable.swift
 //  HoliduKit
 //
 //  Created by Tobias Haeberle on 05.07.17.
@@ -9,7 +9,7 @@
 import Foundation
 
 /// A type that can decode itself from an external representation.
-public protocol _Decodable {
+public protocol Decodable {
   /// Creates a new instance by decoding from the given decoder.
   ///
   /// This initializer throws an error if reading from the decoder fails, or
@@ -249,7 +249,7 @@ public protocol KeyedDecodingContainerProtocol {
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
   /// - throws: `DecodingError.keyNotFound` if `self` does not have an entry for the given key.
   /// - throws: `DecodingError.valueNotFound` if `self` has a null entry for the given key.
-  func decode<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T
+  func decode<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T
   
   /// Decodes a value of the given type for the given key, if present.
   ///
@@ -399,7 +399,7 @@ public protocol KeyedDecodingContainerProtocol {
   /// - parameter key: The key that the decoded value is associated with.
   /// - returns: A decoded value of the requested type, or `nil` if the `Decoder` does not have an entry associated with the given key, or if the value is a null value.
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
-  func decodeIfPresent<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T?
+  func decodeIfPresent<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T?
   
   /// Returns the data stored for the given key as represented in a container keyed by the given key type.
   ///
@@ -659,7 +659,7 @@ public struct KeyedDecodingContainer<K : CodingKey> : KeyedDecodingContainerProt
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
   /// - throws: `DecodingError.keyNotFound` if `self` does not have an entry for the given key.
   /// - throws: `DecodingError.valueNotFound` if `self` has a null entry for the given key.
-  public func decode<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
+  public func decode<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     return try _box.decode(T.self, forKey: key)
   }
   
@@ -839,7 +839,7 @@ public struct KeyedDecodingContainer<K : CodingKey> : KeyedDecodingContainerProt
   /// - parameter key: The key that the decoded value is associated with.
   /// - returns: A decoded value of the requested type, or `nil` if the `Decoder` does not have an entry associated with the given key, or if the value is a null value.
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
-  public func decodeIfPresent<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
+  public func decodeIfPresent<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
     return try _box.decodeIfPresent(T.self, forKey: key)
   }
   
@@ -1029,7 +1029,7 @@ public protocol UnkeyedDecodingContainer {
   /// - returns: A value of the requested type, if present for the given key and convertible to the requested type.
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
   /// - throws: `DecodingError.valueNotFound` if the encountered encoded value is null, or of there are no more values to decode.
-  mutating func decode<T : _Decodable>(_ type: T.Type) throws -> T
+  mutating func decode<T : Decodable>(_ type: T.Type) throws -> T
   
   /// Decodes a value of the given type, if present.
   ///
@@ -1164,7 +1164,7 @@ public protocol UnkeyedDecodingContainer {
   /// - parameter type: The type of value to decode.
   /// - returns: A decoded value of the requested type, or `nil` if the value is a null value, or if there are no more elements to decode.
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
-  mutating func decodeIfPresent<T : _Decodable>(_ type: T.Type) throws -> T?
+  mutating func decodeIfPresent<T : Decodable>(_ type: T.Type) throws -> T?
   
   /// Decodes a nested container keyed by the given type.
   ///
@@ -1315,7 +1315,7 @@ public protocol SingleValueDecodingContainer {
   /// - returns: A value of the requested type.
   /// - throws: `DecodingError.typeMismatch` if the encountered encoded value cannot be converted to the requested type.
   /// - throws: `DecodingError.valueNotFound` if the encountered encoded value is null.
-  func decode<T : _Decodable>(_ type: T.Type) throws -> T
+  func decode<T : Decodable>(_ type: T.Type) throws -> T
 }
 
 //===----------------------------------------------------------------------===//
@@ -1606,7 +1606,7 @@ internal class _KeyedDecodingContainerBase<Key : CodingKey> {
   
   @_inlineable
   @_versioned
-  internal func decode<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
+  internal func decode<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     fatalError("_KeyedDecodingContainerBase cannot be used directly.")
   }
   
@@ -1696,7 +1696,7 @@ internal class _KeyedDecodingContainerBase<Key : CodingKey> {
   
   @_inlineable
   @_versioned
-  internal func decodeIfPresent<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
+  internal func decodeIfPresent<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
     fatalError("_KeyedDecodingContainerBase cannot be used directly.")
   }
   
@@ -1849,7 +1849,7 @@ internal final class _KeyedDecodingContainerBox<Concrete : KeyedDecodingContaine
   
   @_inlineable
   @_versioned
-  override internal func decode<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
+  override internal func decode<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T {
     return try concrete.decode(T.self, forKey: key)
   }
   
@@ -1939,7 +1939,7 @@ internal final class _KeyedDecodingContainerBox<Concrete : KeyedDecodingContaine
   
   @_inlineable
   @_versioned
-  override internal func decodeIfPresent<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
+  override internal func decodeIfPresent<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
     return try concrete.decodeIfPresent(T.self, forKey: key)
   }
   
@@ -1972,85 +1972,85 @@ internal final class _KeyedDecodingContainerBox<Concrete : KeyedDecodingContaine
 //===----------------------------------------------------------------------===//
 // Primitive and RawRepresentable Extensions
 //===----------------------------------------------------------------------===//
-extension Bool : _Decodable {
+extension Bool : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Bool.self)
     }
 }
 
-extension Int : _Decodable {
+extension Int : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Int.self)
     }
 }
 
-extension Int8 : _Decodable {
+extension Int8 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Int8.self)
     }
 }
 
-extension Int16 : _Decodable {
+extension Int16 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Int16.self)
     }
 }
 
-extension Int32 : _Decodable {
+extension Int32 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Int32.self)
     }
 }
 
-extension Int64 : _Decodable {
+extension Int64 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Int64.self)
     }
 }
 
-extension UInt : _Decodable {
+extension UInt : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(UInt.self)
     }
 }
 
-extension UInt8 : _Decodable {
+extension UInt8 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(UInt8.self)
     }
 }
 
-extension UInt16 : _Decodable {
+extension UInt16 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(UInt16.self)
     }
 }
 
-extension UInt32 : _Decodable {
+extension UInt32 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(UInt32.self)
     }
 }
 
-extension UInt64 : _Decodable {
+extension UInt64 : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(UInt64.self)
     }
 }
 
-extension Float : _Decodable {
+extension Float : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Float.self)
     }
 }
 
-extension Double : _Decodable {
+extension Double : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(Double.self)
     }
 }
 
-extension String : _Decodable {
+extension String : Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.singleValueContainer().decode(String.self)
     }
@@ -2058,7 +2058,7 @@ extension String : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == Bool, Self : _Decodable {
+public extension RawRepresentable where RawValue == Bool, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2071,7 +2071,7 @@ public extension RawRepresentable where RawValue == Bool, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == Int, Self : _Decodable {
+public extension RawRepresentable where RawValue == Int, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2083,20 +2083,7 @@ public extension RawRepresentable where RawValue == Int, Self : _Decodable {
 }
 
 
-public extension RawRepresentable where RawValue == Int8, Self : _Decodable {
-    public init(from decoder: Decoder) throws {
-        let decoded = try decoder.singleValueContainer().decode(RawValue.self)
-        guard let value = Self(rawValue: decoded) else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot initialize \(Self.self) from invalid \(RawValue.self) value \(decoded)"))
-        }
-        
-        self = value
-    }
-}
-
-
-
-public extension RawRepresentable where RawValue == Int16, Self : _Decodable {
+public extension RawRepresentable where RawValue == Int8, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2109,7 +2096,7 @@ public extension RawRepresentable where RawValue == Int16, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == Int32, Self : _Decodable {
+public extension RawRepresentable where RawValue == Int16, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2122,7 +2109,7 @@ public extension RawRepresentable where RawValue == Int32, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == Int64, Self : _Decodable {
+public extension RawRepresentable where RawValue == Int32, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2135,31 +2122,7 @@ public extension RawRepresentable where RawValue == Int64, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == UInt, Self : _Decodable {
-    public init(from decoder: Decoder) throws {
-        let decoded = try decoder.singleValueContainer().decode(RawValue.self)
-        guard let value = Self(rawValue: decoded) else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot initialize \(Self.self) from invalid \(RawValue.self) value \(decoded)"))
-        }
-        
-        self = value
-    }
-}
-
-
-public extension RawRepresentable where RawValue == UInt8, Self : _Decodable {
-    public init(from decoder: Decoder) throws {
-        let decoded = try decoder.singleValueContainer().decode(RawValue.self)
-        guard let value = Self(rawValue: decoded) else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot initialize \(Self.self) from invalid \(RawValue.self) value \(decoded)"))
-        }
-        
-        self = value
-    }
-}
-
-
-public extension RawRepresentable where RawValue == UInt16, Self : _Decodable {
+public extension RawRepresentable where RawValue == Int64, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2172,7 +2135,31 @@ public extension RawRepresentable where RawValue == UInt16, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == UInt32, Self : _Decodable {
+public extension RawRepresentable where RawValue == UInt, Self : Decodable {
+    public init(from decoder: Decoder) throws {
+        let decoded = try decoder.singleValueContainer().decode(RawValue.self)
+        guard let value = Self(rawValue: decoded) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot initialize \(Self.self) from invalid \(RawValue.self) value \(decoded)"))
+        }
+        
+        self = value
+    }
+}
+
+
+public extension RawRepresentable where RawValue == UInt8, Self : Decodable {
+    public init(from decoder: Decoder) throws {
+        let decoded = try decoder.singleValueContainer().decode(RawValue.self)
+        guard let value = Self(rawValue: decoded) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot initialize \(Self.self) from invalid \(RawValue.self) value \(decoded)"))
+        }
+        
+        self = value
+    }
+}
+
+
+public extension RawRepresentable where RawValue == UInt16, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2185,7 +2172,7 @@ public extension RawRepresentable where RawValue == UInt32, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == UInt64, Self : _Decodable {
+public extension RawRepresentable where RawValue == UInt32, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2198,7 +2185,7 @@ public extension RawRepresentable where RawValue == UInt64, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == Float, Self : _Decodable {
+public extension RawRepresentable where RawValue == UInt64, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2211,7 +2198,7 @@ public extension RawRepresentable where RawValue == Float, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == Double, Self : _Decodable {
+public extension RawRepresentable where RawValue == Float, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2224,7 +2211,20 @@ public extension RawRepresentable where RawValue == Double, Self : _Decodable {
 
 
 
-public extension RawRepresentable where RawValue == String, Self : _Decodable {
+public extension RawRepresentable where RawValue == Double, Self : Decodable {
+    public init(from decoder: Decoder) throws {
+        let decoded = try decoder.singleValueContainer().decode(RawValue.self)
+        guard let value = Self(rawValue: decoded) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Cannot initialize \(Self.self) from invalid \(RawValue.self) value \(decoded)"))
+        }
+        
+        self = value
+    }
+}
+
+
+
+public extension RawRepresentable where RawValue == String, Self : Decodable {
     public init(from decoder: Decoder) throws {
         let decoded = try decoder.singleValueContainer().decode(RawValue.self)
         guard let value = Self(rawValue: decoded) else {
@@ -2281,8 +2281,8 @@ extension RawRepresentable where Self.RawValue == Int, Self: CodingKey  {
 //===----------------------------------------------------------------------===//
 
 fileprivate func assertTypeIsDecodable<T>(_ type: T.Type, in wrappingType: Any.Type) {
-    guard T.self is _Decodable.Type else {
-        if T.self == _Decodable.self {
+    guard T.self is Decodable.Type else {
+        if T.self == Decodable.self {
             preconditionFailure("\(wrappingType) does not conform to Decodable because Decodable does not conform to itself. You must use a concrete type to encode or decode.")
         } else {
             preconditionFailure("\(wrappingType) does not conform to Decodable because \(T.self) does not conform to Decodable.")
@@ -2292,7 +2292,7 @@ fileprivate func assertTypeIsDecodable<T>(_ type: T.Type, in wrappingType: Any.T
 
 
 
-extension Optional : _Decodable /* where Wrapped : _Decodable */ {
+extension Optional : Decodable /* where Wrapped : Decodable */ {
     public init(from decoder: Decoder) throws {
         // Initialize self here so we can get type(of: self).
         self = .none
@@ -2300,7 +2300,7 @@ extension Optional : _Decodable /* where Wrapped : _Decodable */ {
         
         let container = try decoder.singleValueContainer()
         if !container.decodeNil() {
-            let metaType = (Wrapped.self as! _Decodable.Type)
+            let metaType = (Wrapped.self as! Decodable.Type)
             let element = try metaType.init(from: decoder)
             self = .some(element as! Wrapped)
         }
@@ -2309,13 +2309,13 @@ extension Optional : _Decodable /* where Wrapped : _Decodable */ {
 
 
 
-extension Array : _Decodable /* where Element : _Decodable */ {
+extension Array : Decodable /* where Element : Decodable */ {
     public init(from decoder: Decoder) throws {
         // Initialize self here so we can get type(of: self).
         self.init()
         assertTypeIsDecodable(Element.self, in: type(of: self))
         
-        let metaType = (Element.self as! _Decodable.Type)
+        let metaType = (Element.self as! Decodable.Type)
         var container = try decoder.unkeyedContainer()
         while !container.isAtEnd {
             // superDecoder fetches the next element as a container and wraps a Decoder around it.
@@ -2329,13 +2329,13 @@ extension Array : _Decodable /* where Element : _Decodable */ {
 
 
 
-extension Set : _Decodable /* where Element : _Decodable */ {
+extension Set : Decodable /* where Element : Decodable */ {
     public init(from decoder: Decoder) throws {
         // Initialize self here so we can get type(of: self).
         self.init()
         assertTypeIsDecodable(Element.self, in: type(of: self))
         
-        let metaType = (Element.self as! _Decodable.Type)
+        let metaType = (Element.self as! Decodable.Type)
         var container = try decoder.unkeyedContainer()
         while !container.isAtEnd {
             // superDecoder fetches the next element as a container and wraps a Decoder around it.
@@ -2364,7 +2364,7 @@ internal struct _DictionaryCodingKey : CodingKey {
 }
 
 
-extension Dictionary : _Decodable /* where Key : _Decodable, Value : _Decodable */ {
+extension Dictionary : Decodable /* where Key : Decodable, Value : Decodable */ {
     public init(from decoder: Decoder) throws {
         // Initialize self here so we can print type(of: self).
         self.init()
@@ -2374,7 +2374,7 @@ extension Dictionary : _Decodable /* where Key : _Decodable, Value : _Decodable 
         if Key.self == String.self {
             // The keys are Strings, so we should be able to expect a keyed container.
             let container = try decoder.container(keyedBy: _DictionaryCodingKey.self)
-            let valueMetaType = Value.self as! _Decodable.Type
+            let valueMetaType = Value.self as! Decodable.Type
             for key in container.allKeys {
                 let valueDecoder = try container.superDecoder(forKey: key)
                 let value = try valueMetaType.init(from: valueDecoder)
@@ -2382,7 +2382,7 @@ extension Dictionary : _Decodable /* where Key : _Decodable, Value : _Decodable 
             }
         } else if Key.self == Int.self {
             // The keys are Ints, so we should be able to expect a keyed container.
-            let valueMetaType = Value.self as! _Decodable.Type
+            let valueMetaType = Value.self as! Decodable.Type
             let container = try decoder.container(keyedBy: _DictionaryCodingKey.self)
             for key in container.allKeys {
                 guard key.intValue != nil else {
@@ -2412,8 +2412,8 @@ extension Dictionary : _Decodable /* where Key : _Decodable, Value : _Decodable 
                 }
             }
             
-            let keyMetaType = (Key.self as! _Decodable.Type)
-            let valueMetaType = (Value.self as! _Decodable.Type)
+            let keyMetaType = (Key.self as! Decodable.Type)
+            let valueMetaType = (Value.self as! Decodable.Type)
             while !container.isAtEnd {
                 // superDecoder fetches the next element as a container and wraps a Decoder around it.
                 // This is normally appropriate for decoding super, but this is really what we want to do.
@@ -2506,7 +2506,7 @@ public extension KeyedDecodingContainerProtocol {
     return try self.decode(String.self, forKey: key)
   }
   
-  public func decodeIfPresent<T : _Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
+  public func decodeIfPresent<T : Decodable>(_ type: T.Type, forKey key: Key) throws -> T? {
     guard try self.contains(key) && !self.decodeNil(forKey: key) else { return nil }
     return try self.decode(T.self, forKey: key)
   }
@@ -2585,7 +2585,7 @@ public extension UnkeyedDecodingContainer {
     return try self.decode(String.self)
   }
   
-  mutating func decodeIfPresent<T : _Decodable>(_ type: T.Type) throws -> T? {
+  mutating func decodeIfPresent<T : Decodable>(_ type: T.Type) throws -> T? {
     guard try !self.isAtEnd && !self.decodeNil() else { return nil }
     return try self.decode(T.self)
   }

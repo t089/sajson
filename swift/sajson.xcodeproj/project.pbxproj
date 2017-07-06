@@ -27,6 +27,7 @@
 		F6BAE30E1F0E193F00E8FE33 /* FastJSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE30A1F0E193F00E8FE33 /* FastJSONDecoder.swift */; };
 		F6BAE3121F0E1D1600E8FE33 /* FastJSONDecoder_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE30F1F0E1CF000E8FE33 /* FastJSONDecoder_Tests.swift */; };
 		F6BAE3131F0E1D1600E8FE33 /* FastJSONDecoder_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE30F1F0E1CF000E8FE33 /* FastJSONDecoder_Tests.swift */; };
+		F6BAE3151F0E61D700E8FE33 /* Foundation+_Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE3141F0E61D700E8FE33 /* Foundation+_Decodable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _Decodable.swift; sourceTree = "<group>"; };
 		F6BAE30A1F0E193F00E8FE33 /* FastJSONDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastJSONDecoder.swift; sourceTree = "<group>"; };
 		F6BAE30F1F0E1CF000E8FE33 /* FastJSONDecoder_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastJSONDecoder_Tests.swift; sourceTree = "<group>"; };
+		F6BAE3141F0E61D700E8FE33 /* Foundation+_Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Foundation+_Decodable.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +158,7 @@
 			children = (
 				F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */,
 				F6BAE30A1F0E193F00E8FE33 /* FastJSONDecoder.swift */,
+				F6BAE3141F0E61D700E8FE33 /* Foundation+_Decodable.swift */,
 			);
 			path = Decodable;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EE3561D1EC3A87700885763 /* sajson-ffi.cpp in Sources */,
+				F6BAE3151F0E61D700E8FE33 /* Foundation+_Decodable.swift in Sources */,
 				8EE3561E1EC3A87700885763 /* sajson.swift in Sources */,
 				F6BAE30D1F0E193F00E8FE33 /* FastJSONDecoder.swift in Sources */,
 				F6BAE30B1F0E193F00E8FE33 /* _Decodable.swift in Sources */,

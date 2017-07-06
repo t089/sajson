@@ -98,7 +98,7 @@ public final class FastJSONDecoder {
     public init() { }
     
     
-    public func decode<T : _Decodable>(_ type: T.Type, from data: Data) throws -> T {
+    public func decode<T : Decodable>(_ type: T.Type, from data: Data) throws -> T {
         let doc: Document
         do {
             doc = try parse(allocationStrategy: allocationStrategy.sajson_strategy, input: data)
@@ -379,14 +379,120 @@ extension _JSONDecoder {
         return stringValue
     }
     
-    fileprivate func unbox<T: _Decodable>(_ value: ValueReader, as type: T.Type) throws -> T? {
+    fileprivate func unbox(_ value: ValueReader, as type: Date.Type) throws -> Date? {
         guard !value.isNull else { return nil }
         
-        storage.push(container: value)
-        let ret = try T(from: self)
-        storage.popContainer()
+        switch self.options.dateDecodingStrategy {
+        case .deferredToDate:
+            self.storage.push(container: value)
+            let date = try Date(from: self)
+            self.storage.popContainer()
+            return date
+            
+        case .secondsSince1970:
+            let double = try self.unbox(value, as: Double.self)!
+            return Date(timeIntervalSince1970: double)
+            
+        case .millisecondsSince1970:
+            let double = try self.unbox(value, as: Double.self)!
+            return Date(timeIntervalSince1970: double / 1000.0)
+            
+        case .iso8601:
+            if #available(OSX 10.12, iOS 10.0, watchOS 3.0, tvOS 10.0, *) {
+                let string = try self.unbox(value, as: String.self)!
+                guard let date = _iso8601Formatter.date(from: string) else {
+                    throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Expected date string to be ISO8601-formatted."))
+                }
+                
+                return date
+            } else {
+                fatalError("ISO8601DateFormatter is unavailable on this platform.")
+            }
+            
+        case .formatted(let formatter):
+            let string = try self.unbox(value, as: String.self)!
+            guard let date = formatter.date(from: string) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Date string does not match format expected by formatter."))
+            }
+            
+            return date
+            
+        case .custom(let closure):
+            self.storage.push(container: value)
+            let date = try closure(self)
+            self.storage.popContainer()
+            return date
+        }
+    }
+    
+    fileprivate func unbox(_ value: ValueReader, as type: Data.Type) throws -> Data? {
+        guard !value.isNull else { return nil }
         
-        return ret
+        switch self.options.dataDecodingStrategy {
+        case .deferredToData:
+            self.storage.push(container: value)
+            let data = try Data(from: self)
+            self.storage.popContainer()
+            return data
+            
+        case .base64:
+            guard case let .string(string) = value else {
+                throw DecodingError._typeMismatch(at: self.codingPath, expectation: type, reality: value)
+            }
+            
+            guard let data = Data(base64Encoded: string) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "Encountered Data is not valid Base64."))
+            }
+            
+            return data
+            
+        case .custom(let closure):
+            self.storage.push(container: value)
+            let data = try closure(self)
+            self.storage.popContainer()
+            return data
+        }
+    }
+    
+    fileprivate func unbox(_ value: ValueReader, as type: Decimal.Type) throws -> Decimal? {
+        guard !value.isNull else { return nil }
+        
+        let doubleValue = try self.unbox(value, as: Double.self)!
+        return Decimal(doubleValue)
+    }
+    
+    fileprivate func unbox<T: Decodable>(_ value: ValueReader, as type: T.Type) throws -> T? {
+        let decoded: T
+        
+        if T.self == Date.self {
+            guard let date = try self.unbox(value, as: Date.self) else { return nil }
+            decoded = date as! T
+        } else if T.self == Data.self {
+            guard let data = try self.unbox(value, as: Data.self) else { return nil }
+            decoded = data as! T
+        } else if T.self == URL.self {
+            guard let urlString = try self.unbox(value, as: String.self) else {
+                return nil
+            }
+            
+            guard let url = URL(string: urlString) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath,
+                                                                        debugDescription: "Invalid URL string."))
+            }
+            
+            decoded = (url as! T)
+        } else if T.self == Decimal.self {
+            guard let decimal = try self.unbox(value, as: Decimal.self) else { return nil }
+            decoded = decimal as! T
+        } else {
+            
+            storage.push(container: value)
+            decoded = try T(from: self)
+            storage.popContainer()
+            
+        }
+        
+        return decoded
     }
 }
 
@@ -622,7 +728,7 @@ fileprivate struct _JSONKeyedDecodingContainer<K : CodingKey> : KeyedDecodingCon
         return entry.isNull
     }
     
-    func decode<T>(_ type: T.Type, forKey key: K) throws -> T where T : _Decodable {
+    func decode<T>(_ type: T.Type, forKey key: K) throws -> T where T : Decodable {
         guard let entry = objectReader[key.stringValue] else {
             throw DecodingError.keyNotFound(key, DecodingError.Context(codingPath: self.decoder.codingPath, debugDescription: "No value associated with key \(key) (\"\(key.stringValue)\")."))
         }
@@ -948,7 +1054,7 @@ fileprivate struct _JSONUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         }
     }
     
-    public mutating func decode<T : _Decodable>(_ type: T.Type) throws -> T {
+    public mutating func decode<T : Decodable>(_ type: T.Type) throws -> T {
         guard !self.isAtEnd else {
             throw DecodingError.valueNotFound(type, DecodingError.Context(codingPath: self.decoder.codingPath + [_JSONKey(index: self.currentIndex)], debugDescription: "Unkeyed container is at end."))
         }
@@ -1109,7 +1215,7 @@ extension _JSONDecoder : SingleValueDecodingContainer {
         return try self.unbox(self.storage.topContainer, as: String.self)!
     }
     
-    public func decode<T : _Decodable>(_ type: T.Type) throws -> T {
+    public func decode<T : Decodable>(_ type: T.Type) throws -> T {
         try expectNonNull(T.self)
         return try self.unbox(self.storage.topContainer, as: T.self)!
     }
@@ -1139,6 +1245,17 @@ fileprivate struct _JSONKey : CodingKey {
     
     fileprivate static let `super` = _JSONKey(stringValue: "super")!
 }
+
+//===----------------------------------------------------------------------===//
+// Shared ISO8601 Date Formatter
+//===----------------------------------------------------------------------===//
+// NOTE: This value is implicitly lazy and _must_ be lazy. We're compiled against the latest SDK (w/ ISO8601DateFormatter), but linked against whichever Foundation the user has. ISO8601DateFormatter might not exist, so we better not hit this code path on an older OS.
+@available(OSX 10.12, iOS 10.0, watchOS 3.0, tvOS 10.0, *)
+fileprivate var _iso8601Formatter: ISO8601DateFormatter = {
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = .withInternetDateTime
+    return formatter
+}()
 
 
 //===----------------------------------------------------------------------===//
