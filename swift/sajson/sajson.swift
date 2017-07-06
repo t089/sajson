@@ -316,8 +316,8 @@ public final class Document {
     ///
     /// This function is structured as a closure rather than a property to prevent accidentally
     /// holding onto a `ValueReader` before the `Document` has been deallocated.
-    public func withRootValueReader<T>(_ cb: (ValueReader) -> T) -> T {
-        return cb(rootNode.valueReader)
+    public func withRootValueReader<T>(_ cb: (ValueReader) throws -> T) rethrows -> T {
+        return try cb(rootNode.valueReader)
     }
 
     /// Decodes the entire document into a Swift `Value` tree.
