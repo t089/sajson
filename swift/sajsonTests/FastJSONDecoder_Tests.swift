@@ -8,13 +8,13 @@
 
 import Foundation
 import XCTest
-import sajson_swift
+@testable import sajson_swift
 
-fileprivate func data(_ string: String) -> Data {
+func data(_ string: String) -> Data {
     return string.data(using: .utf8)!
 }
 
-fileprivate struct TestCodingKey: CodingKey, ExpressibleByStringLiteral, CustomStringConvertible {
+struct TestCodingKey: CodingKey, ExpressibleByStringLiteral, CustomStringConvertible {
     var stringValue: String
     var intValue: Int? { return Int(stringValue) }
     
@@ -41,7 +41,7 @@ fileprivate struct TestCodingKey: CodingKey, ExpressibleByStringLiteral, CustomS
     var description: String { return "TestCodingKey(\"\(stringValue)\")" }
 }
 
-fileprivate struct DeferredDecodable: Decodable {
+struct DeferredDecodable: Decodable {
     static var decodeHandler: (Decoder) throws -> () = { _ in }
     init(from decoder: Decoder) throws {
         try DeferredDecodable.decodeHandler(decoder)

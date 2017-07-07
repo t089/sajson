@@ -21,6 +21,10 @@
 		8EE356221EC3A8AD00885763 /* sajson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DA0EBB1EBD65FB003D404F /* sajson.swift */; };
 		8EE356231EC3A8E500885763 /* sajsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638FA3D01EBD6575002CDC45 /* sajsonTests.swift */; };
 		8EE356241EC3A8EC00885763 /* sajsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638FA3D01EBD6575002CDC45 /* sajsonTests.swift */; };
+		F61470831F0F744900996F65 /* place.json in Resources */ = {isa = PBXBuildFile; fileRef = F61470821F0F744900996F65 /* place.json */; };
+		F61470841F0F744900996F65 /* place.json in Resources */ = {isa = PBXBuildFile; fileRef = F61470821F0F744900996F65 /* place.json */; };
+		F61470861F0F747F00996F65 /* PlaceDecoding_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61470851F0F747F00996F65 /* PlaceDecoding_Tests.swift */; };
+		F61470871F0F747F00996F65 /* PlaceDecoding_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61470851F0F747F00996F65 /* PlaceDecoding_Tests.swift */; };
 		F6BAE30B1F0E193F00E8FE33 /* _Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */; };
 		F6BAE30C1F0E193F00E8FE33 /* _Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */; };
 		F6BAE30D1F0E193F00E8FE33 /* FastJSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE30A1F0E193F00E8FE33 /* FastJSONDecoder.swift */; };
@@ -60,6 +64,8 @@
 		8EE355D41EC39F8E00885763 /* sajson-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "sajson-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EE356041EC39FEA00885763 /* sajson_swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = sajson_swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EE3560C1EC39FEB00885763 /* sajson-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "sajson-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F61470821F0F744900996F65 /* place.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = place.json; sourceTree = "<group>"; };
+		F61470851F0F747F00996F65 /* PlaceDecoding_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaceDecoding_Tests.swift; sourceTree = "<group>"; };
 		F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _Decodable.swift; sourceTree = "<group>"; };
 		F6BAE30A1F0E193F00E8FE33 /* FastJSONDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastJSONDecoder.swift; sourceTree = "<group>"; };
 		F6BAE30F1F0E1CF000E8FE33 /* FastJSONDecoder_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastJSONDecoder_Tests.swift; sourceTree = "<group>"; };
@@ -138,9 +144,11 @@
 		638FA3CF1EBD6575002CDC45 /* sajsonTests */ = {
 			isa = PBXGroup;
 			children = (
+				F61470811F0F743900996F65 /* fixtures */,
 				638FA3D01EBD6575002CDC45 /* sajsonTests.swift */,
 				638FA3D21EBD6575002CDC45 /* Info.plist */,
 				F6BAE30F1F0E1CF000E8FE33 /* FastJSONDecoder_Tests.swift */,
+				F61470851F0F747F00996F65 /* PlaceDecoding_Tests.swift */,
 			);
 			path = sajsonTests;
 			sourceTree = "<group>";
@@ -151,6 +159,14 @@
 				63F80E5C1EC03C2800A5A902 /* sajson.h */,
 			);
 			name = sajson;
+			sourceTree = "<group>";
+		};
+		F61470811F0F743900996F65 /* fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				F61470821F0F744900996F65 /* place.json */,
+			);
+			path = fixtures;
 			sourceTree = "<group>";
 		};
 		F6BAE3081F0E193F00E8FE33 /* Decodable */ = {
@@ -321,6 +337,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F61470831F0F744900996F65 /* place.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +352,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F61470841F0F744900996F65 /* place.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6BAE3121F0E1D1600E8FE33 /* FastJSONDecoder_Tests.swift in Sources */,
+				F61470861F0F747F00996F65 /* PlaceDecoding_Tests.swift in Sources */,
 				8EE356231EC3A8E500885763 /* sajsonTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,6 +397,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6BAE3131F0E1D1600E8FE33 /* FastJSONDecoder_Tests.swift in Sources */,
+				F61470871F0F747F00996F65 /* PlaceDecoding_Tests.swift in Sources */,
 				8EE356241EC3A8EC00885763 /* sajsonTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
