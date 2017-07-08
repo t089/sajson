@@ -8,6 +8,9 @@
 
 import Foundation
 
+#if !swift(>=4.0) // The decodable protocol is available in Swift 4.
+
+    
 /// A type that can decode itself from an external representation.
 public protocol Decodable {
   /// Creates a new instance by decoding from the given decoder.
@@ -2590,3 +2593,4 @@ public extension UnkeyedDecodingContainer {
     return try self.decode(T.self)
   }
 }
+#endif
