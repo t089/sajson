@@ -64,8 +64,8 @@ class PlaceDecoding_Tests: XCTestCase {
             print(error)
             throw error
         }
-        XCTAssertEqual(place.pin.lon, 138.11)
-        XCTAssertEqual(place.pin.lat, -62.13)
+        XCTAssertEqualWithAccuracy(place.pin.lon, 138.11, accuracy: 0.01)
+        XCTAssertEqualWithAccuracy(place.pin.lat, -62.13, accuracy: 0.01)
     }
     
     

@@ -48,18 +48,6 @@ class sajsonTests: XCTestCase {
         XCTAssertEqual(10, data[2])
     }
     
-    func test_floats() {
-        let doc = try! parse(allocationStrategy: .single, input: "{\"start\": 12.948, \"end\": 42.1234}")
-        doc.withRootValueReader { docValue in
-            guard case .object(let objectReader) = docValue else { XCTFail(); return }
-            XCTAssert(objectReader.count == 2)
-            guard let startValue = objectReader["start"], case let .double(start) = startValue else { XCTFail(); return }
-            guard let endValue = objectReader["end"], case let .double(end) = endValue else { XCTFail(); return }
-            
-            XCTAssertEqual(start, 12.948)
-            XCTAssertEqual(end, 42.1234)
-        }
-    }
 
     // MARK: Benchmarks
 

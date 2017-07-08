@@ -25,6 +25,7 @@
 		F61470841F0F744900996F65 /* place.json in Resources */ = {isa = PBXBuildFile; fileRef = F61470821F0F744900996F65 /* place.json */; };
 		F61470861F0F747F00996F65 /* PlaceDecoding_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61470851F0F747F00996F65 /* PlaceDecoding_Tests.swift */; };
 		F61470871F0F747F00996F65 /* PlaceDecoding_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61470851F0F747F00996F65 /* PlaceDecoding_Tests.swift */; };
+		F69193EF1F10F2690047BFAE /* Foundation+_Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE3141F0E61D700E8FE33 /* Foundation+_Decodable.swift */; };
 		F6BAE30B1F0E193F00E8FE33 /* _Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */; };
 		F6BAE30C1F0E193F00E8FE33 /* _Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE3091F0E193F00E8FE33 /* _Decodable.swift */; };
 		F6BAE30D1F0E193F00E8FE33 /* FastJSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BAE30A1F0E193F00E8FE33 /* FastJSONDecoder.swift */; };
@@ -386,6 +387,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EE356211EC3A8AD00885763 /* sajson-ffi.cpp in Sources */,
+				F69193EF1F10F2690047BFAE /* Foundation+_Decodable.swift in Sources */,
 				8EE356221EC3A8AD00885763 /* sajson.swift in Sources */,
 				F6BAE30E1F0E193F00E8FE33 /* FastJSONDecoder.swift in Sources */,
 				F6BAE30C1F0E193F00E8FE33 /* _Decodable.swift in Sources */,
