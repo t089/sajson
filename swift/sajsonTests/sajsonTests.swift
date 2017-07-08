@@ -7,6 +7,16 @@ class sajsonTests: XCTestCase {
         _ = try! parse(allocationStrategy: .single, input: "[]")
     }
 
+    func test_zero_embedded_strings() {
+        let doc = try! parse(allocationStrategy: .single, input: "[\"a\\u0000b\"]")
+        doc.withRootValueReader { docValue in
+            guard case .array(let array) = docValue else { XCTFail(); return }
+            XCTAssertEqual(1, array.count)
+            guard case .string(let str) = array[0] else { XCTFail(); return }
+            XCTAssertEqual("a\0b", str)
+        }
+    }
+
     func test_array() {
         let doc = try! parse(allocationStrategy: .single, input: "[10, \"Hello\"]")
         doc.withRootValueReader { docValue in
@@ -78,6 +88,19 @@ class sajsonTests: XCTestCase {
                 // Verify that something was actually deserialized.
                 XCTAssert(array.count == 1000)
             }
+        }
+    }
+
+    func test_floats() {
+        let doc = try! parse(allocationStrategy: .single, input: "{\"start\": 12.948, \"end\": 42.1234}")
+        doc.withRootValueReader { docValue in
+            guard case .object(let objectReader) = docValue else { XCTFail(); return }
+            XCTAssert(objectReader.count == 2)
+            guard case .some(.double(let start)) = objectReader["start"] else { XCTFail(); return }
+            guard case .some(.double(let end)) = objectReader["end"] else { XCTFail(); return }
+
+            XCTAssertEqualWithAccuracy(12.948, start, accuracy: 0.001)
+            XCTAssertEqualWithAccuracy(42.1234, end, accuracy: 0.001)
         }
     }
 
