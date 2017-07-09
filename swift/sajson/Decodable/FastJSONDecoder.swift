@@ -65,7 +65,7 @@ public final class FastJSONDecoder {
     }
     
     /// The memory allocation strategy used in decoding
-    public var allocationStrategy: AllocationStrategy = .dynamic
+    public var allocationStrategy: AllocationStrategy = .single
     
     /// The strategy to use in decoding dates. Defaults to `.deferredToDate`.
     public var dateDecodingStrategy: DateDecodingStrategy = .deferredToDate
@@ -344,25 +344,31 @@ extension _JSONDecoder {
     fileprivate func unbox(_ value: ValueReader, as type: Float.Type) throws -> Float? {
         guard !value.isNull else { return nil }
         
-        guard case let .double(doubleValue) = value else {
+        switch value {
+        case .double(let doubleValue):
+            guard abs(doubleValue) <= Double(Float.greatestFiniteMagnitude) else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Parsed JSON number <\(doubleValue)> does not fit in \(type)."))
+            }
+            
+            return Float(doubleValue)
+        case .integer(let intValue):
+            return Float(intValue)
+        default:
             throw DecodingError._typeMismatch(at: codingPath, expectation: Float.self, reality: value)
         }
-        
-        guard abs(doubleValue) <= Double(Float.greatestFiniteMagnitude) else {
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Parsed JSON number <\(doubleValue)> does not fit in \(type)."))
-        }
-        
-        return Float(doubleValue)
     }
     
     fileprivate func unbox(_ value: ValueReader, as type: Double.Type) throws -> Double? {
         guard !value.isNull else { return nil }
         
-        guard case let .double(doubleValue) = value else {
-            throw DecodingError._typeMismatch(at: codingPath, expectation: Double.self, reality: value)
+        switch value {
+        case .double(let doubleValue):
+            return doubleValue
+        case .integer(let intValue):
+            return Double(intValue)
+        default:
+            throw DecodingError._typeMismatch(at: codingPath, expectation: Float.self, reality: value)
         }
-        
-        return doubleValue
     }
     
     fileprivate func unbox(_ value: ValueReader, as type: String.Type) throws -> String? {
@@ -1299,6 +1305,17 @@ fileprivate extension DecodingError {
         }
     }
 }
+
+//extension DecodingError: CustomDebugStringConvertible {
+//    public var debugDescription: String {
+//        switch self {
+//        case .dataCorrupted(let c): return c.debugDescription
+//        case .keyNotFound(_, let c): return c.debugDescription
+//        case .typeMismatch(_, let c): return c.debugDescription
+//        case .valueNotFound(_, let c): return c.debugDescription
+//        }
+//    }
+//}
 
 extension ValueReader {
     fileprivate var isNull: Bool {
