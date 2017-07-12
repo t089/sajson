@@ -367,7 +367,7 @@ extension _JSONDecoder {
         case .integer(let intValue):
             return Double(intValue)
         default:
-            throw DecodingError._typeMismatch(at: codingPath, expectation: Float.self, reality: value)
+            throw DecodingError._typeMismatch(at: codingPath, expectation: Double.self, reality: value)
         }
     }
     
