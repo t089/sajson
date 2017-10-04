@@ -1,9 +1,8 @@
 //
 //  FastJSONDecoder.swift
-//  HoliduKit
 //
 //  Created by Tobias Haeberle on 05.07.17.
-//  Copyright © 2017 Holidu GmbH. All rights reserved.
+//  Copyright © 2017 Tobias Haeberle. All rights reserved.
 //
 
 import Foundation

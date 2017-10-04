@@ -9,6 +9,8 @@
 import Foundation
 
 
+#if !swift(>=3.2) // The decodable protocol is available in Swift 3.2.
+
 extension Data: Decodable {
     public init(from decoder: Decoder) throws {
         var container = try decoder.unkeyedContainer()
@@ -53,3 +55,5 @@ extension UUID: Decodable {
         self = uuid
     }
 }
+
+#endif

@@ -1,14 +1,13 @@
 //
 //  Decodable.swift
-//  HoliduKit
 //
 //  Created by Tobias Haeberle on 05.07.17.
-//  Copyright © 2017 Holidu GmbH. All rights reserved.
+//  Copyright © 2017 Tobias Haeberle. All rights reserved.
 //
 
 import Foundation
 
-#if !swift(>=4.0) // The decodable protocol is available in Swift 4.
+#if !swift(>=3.2) // The decodable protocol is available in Swift 3.2.
 
     
 /// A type that can decode itself from an external representation.

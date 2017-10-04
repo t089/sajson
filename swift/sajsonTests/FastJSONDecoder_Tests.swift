@@ -135,7 +135,7 @@ class FastJSONDecoder_Tests: XCTestCase {
         DeferredDecodable.decodeHandler = { decoder in
             let container = try decoder.container(keyedBy: TestCodingKey.self)
             let parsedInt = try container.decode(Float.self, forKey: "value")
-            XCTAssertEqualWithAccuracy(parsedInt, expectedOutput, accuracy: 0.01)
+            XCTAssertEqual(parsedInt, expectedOutput, accuracy: 0.01)
         }
         
         let _: DeferredDecodable = try FastJSONDecoder().decode(DeferredDecodable.self, from: data(input))
@@ -148,7 +148,7 @@ class FastJSONDecoder_Tests: XCTestCase {
         DeferredDecodable.decodeHandler = { decoder in
             let container = try decoder.container(keyedBy: TestCodingKey.self)
             let parsedValue = try container.decode(Float.self, forKey: "value")
-            XCTAssertEqualWithAccuracy(parsedValue, expectedOutput, accuracy: 0.1)
+            XCTAssertEqual(parsedValue, expectedOutput, accuracy: 0.1)
         }
         
         do {
@@ -163,7 +163,7 @@ class FastJSONDecoder_Tests: XCTestCase {
         DeferredDecodable.decodeHandler = { decoder in
             let container = try decoder.container(keyedBy: TestCodingKey.self)
             let parsedValue = try container.decode(Double.self, forKey: "value")
-            XCTAssertEqualWithAccuracy(parsedValue, expectedOutput, accuracy: 0.1)
+            XCTAssertEqual(parsedValue, expectedOutput, accuracy: 0.1)
         }
         
         do {
